@@ -1,4 +1,4 @@
-# AutoBackup Script (with Cron) on Ubuntu EC2
+# Automated Folder Backup on Ubuntu EC2 using Bash + Cron + Terraform
 
 This project automates the backup of a folder on an Ubuntu EC2 instance using a shell script and schedules it using `cron`.
 
@@ -19,6 +19,46 @@ You will:
 - Ubuntu EC2 instance running
 - SSH access to the instance
 - Basic knowledge of terminal and Linux commands
+
+---
+
+## Tools & Services Used
+
+| Tool/Service    | Purpose                                     |
+|----------------|---------------------------------------------|
+| AWS EC2         | To host the Ubuntu instance                 |
+| Terraform       | To provision the EC2 instance               |
+| Bash            | To write the backup automation script       |
+| Cron            | To schedule and run the backup periodically |
+| SSH             | To securely access the instance             |
+
+---
+
+## Features
+
+- ✅ Automatic backups using cron
+- ✅ Timestamped compressed backup files (`.tar.gz`)
+- ✅ Easy to configure and customize
+- ✅ One-click infrastructure deployment using Terraform
+- ✅ Clean and reusable Bash script
+
+---
+
+## How It Works
+
+The automation works in three main steps:
+
+**1. Shell Script**: A backup script compresses the contents of a specified directory using `tar` and stores it with a timestamp in a separate backup directory.
+
+**2. Cron Job**: The script is scheduled using `cron` to run automatically at regular intervals (daily or every few minutes).
+
+**3. Persistence**: All backup files are stored on the EC2 instance under a dedicated folder for easy access and recovery.
+
+---
+
+## Architecture Diagram
+
+<img width="618" height="513" alt="ec2-backup-output" src="https://github.com/user-attachments/assets/ca709a7c-102f-4239-af11-036834a63b51" />
 
 ---
 
@@ -121,12 +161,17 @@ Choose 1 for Nano editor.
 
 Then add this line for daily backups at midnight:
 ```bash
-0 0 * * * /home/ubuntu/backup.sh
+0 0 * * * /home/ubuntu/backup.sh >> /home/ubuntu/backup.log 2>&1
 ```
 **Or for testing every 2 minutes:**
 
 ```bash
-*/2 * * * * /home/ubuntu/backup.sh
+*/2 * * * * /home/ubuntu/backup.sh >> /home/ubuntu/backup.log 2>&1
+```
+**What this does:**
+```bash
+- >> /home/ubuntu/cron_backup.log appends output to a log file
+- 2>&1 captures any errors too
 ```
 
 Then:
@@ -144,12 +189,34 @@ crontab -l
 
 You should see your cron job listed.
 
-## Author
+Wait 2–4 minutes
 
-Shravani K
+Let cron run the job once or twice.
 
-DevOps Learner
+**Check the Log File**
+```bash
+cat /home/ubuntu/cron_backup.log
+```
 
-LinkedIn: www.linkedin.com/in/shravani-k-25953828a
+You should see:
+```bash
+Backup completed at 2025-07-14_14:47:50
+...
+```
+---
 
+## Output 
+<img width="914" height="536" alt="cron-job-output" src="https://github.com/user-attachments/assets/8a33e1b1-75d5-411a-a42d-935e89d56baf" />
+
+---
+
+## About Me
+
+I'm Shravani, a self-taught and project-driven DevOps engineer passionate about building scalable infrastructure and automating complex workflows.
+
+I love solving real-world problems with tools like Terraform, Ansible, Docker, Jenkins, and AWS — and I’m always learning something new to sharpen my edge in DevOps.
+
+**Connect with me:**
+- LinkedIn: www.linkedin.com/in/shravani3001
+- GitHub: https://github.com/Shravani3001
 
